@@ -6,267 +6,296 @@
 <title>Gacha OC 1.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --green:#28a745;
-    --green-dark:#218838;
-    --bg1:#ffffff;
-    --bg2:#d6ecff;
-    --card-w:180px;
-    --card-h:240px;
+  :root {
+    --green: #28a745;
+    --green-dark: #218838;
+    --bg1: #ffffff;
+    --bg2: #d6ecff;
+    --card-w: 180px;
+    --card-h: 240px;
+    --gold-gradient: linear-gradient(90deg,#b8860b,#ffd700);
+    --purple-gradient: linear-gradient(90deg,#7b2cbf,#b892e6);
   }
   *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:"Poppins",sans-serif;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:14px;
-    padding:28px;
-    background: linear-gradient(135deg,var(--bg1),var(--bg2));
-    color:#072034;
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 28px;
+    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    color: #072034;
   }
-  h1{
-    font-size:3rem;
-    margin:6px 0 0 0;
-    color:#023e6b;
-    text-shadow:0 3px 10px rgba(2,62,107,0.08);
-    letter-spacing:1px;
+  h1 {
+    font-size: 3rem;
+    margin: 6px 0 0 0;
+    color: #023e6b;
+    text-shadow: 0 3px 10px rgba(2,62,107,0.08);
+    letter-spacing: 1px;
+    transition: opacity 0.3s ease;
   }
-  .top-image{
-    width:260px;
-    height:190px;
-    object-fit:cover;
-    border-radius:12px;
-    box-shadow:0 8px 24px rgba(2,62,107,0.08);
-    background:#eee;
+  .top-image {
+    width: 260px;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(2,62,107,0.08);
+    background: #eee;
+    transition: opacity 0.3s ease;
   }
-  #drawBtn{
-    background:var(--green);
-    color:white;
-    border:none;
-    padding:12px 28px;
-    border-radius:10px;
-    font-size:1.05rem;
-    cursor:pointer;
-    box-shadow:0 6px 18px rgba(40,167,69,0.18);
-    transition:transform .14s ease, background .14s;
+  #drawBtn {
+    background: var(--green);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(40,167,69,0.18);
+    transition: transform 0.14s ease, background 0.14s;
   }
-  #drawBtn:active{ transform:translateY(1px) }
-  #drawBtn:disabled{
-    background:gray;
-    cursor:not-allowed;
-    box-shadow:none;
-    transform:none;
+  #drawBtn:active {
+    transform: translateY(1px);
   }
-  #drawBtn:hover:not(:disabled){ background:var(--green-dark) }
+  #drawBtn:disabled {
+    background: gray;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+  #drawBtn:hover:not(:disabled) {
+    background: var(--green-dark);
+  }
+  .loading-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+    width: 260px;
+    height: 14px;
+    position: relative;
+  }
+  .loading-text {
+    color: var(--green);
+    font-weight: 600;
+  }
+  /* Animasi loading baru */
+  .loading-anim {
+    width: 100%;
+    height: 14px;
+    border-radius: 12px;
+    background: #eee;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+  .loading-bar-move {
+    position: absolute;
+    top: 0; left: -30%;
+    width: 30%;
+    height: 100%;
+    border-radius: 12px;
+    animation: loadingMove 1.2s linear infinite;
+    filter: drop-shadow(0 0 3px rgba(0,0,0,0.1));
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(40,167,69,0.6);
+    transition: background 0.5s ease, box-shadow 0.5s ease;
+  }
+  .loading-bar-gold {
+    background: var(--gold-gradient);
+    box-shadow: 0 0 12px #ffd700;
+  }
+  .loading-bar-purple {
+    background: var(--purple-gradient);
+    box-shadow: 0 0 12px #b892e6;
+  }
+  @keyframes loadingMove {
+    0% { left: -30%; }
+    100% { left: 100%; }
+  }
+  .result-container {
+    display: none;
+    width: 100%;
+    max-width: 920px;
+    text-align: center;
+    margin-top: 8px;
+  }
+  .result-container h2 {
+    font-weight: 600;
+    margin: 6px 0 10px;
+    color: #023e6b;
+  }
+  /* === MODIFIKASI DISINI === */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(120px, 1fr)); /* desktop: 3 kartu sebaris */
+    gap: 18px 24px;
+    justify-items: center;
+    align-items: start;
+    grid-template-areas: "pos0 pos1 pos2"; /* posisi default */
+  }
+  .card-wrapper.pos-0 { grid-area: pos0; }
+  .card-wrapper.pos-1 { grid-area: pos1; }
+  .card-wrapper.pos-2 { grid-area: pos2; }
+  @media (max-width: 640px) {
+    .cards {
+      grid-template-columns: repeat(2, 1fr); /* hp: 2 kolom */
+      grid-template-areas:
+        "pos0 pos1"
+        "pos2 pos2"; /* baris kedua kartu ketiga full lebar */
+    }
+    .card-wrapper.pos-2 .card {
+      width: 100% !important; /* full lebar di hp */
+      height: auto;
+      aspect-ratio: 3 / 4;
+    }
+  }
+  /* === END MODIFIKASI === */
 
-  .loading-container{
-    display:none;
-    flex-direction:column;
-    align-items:center;
-    gap:10px;
-    margin-top:6px;
+  .card-wrapper {
+    width: var(--card-w);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
   }
-  .loading-text{
-    color:var(--green);
-    font-weight:600;
+  .card-wrapper.show {
+    opacity: 1;
+    transform: translateY(0);
   }
-  .loading-bar{
-    width:260px;
-    height:14px;
-    background:linear-gradient(90deg, #e6f5e9, #d6f0db);
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.6);
-  }
-  .loading-fill{
-    height:100%;
-    width:0%;
-    background: linear-gradient(90deg,#2ecc71,#28a745);
-    transition: width 2s linear;
-  }
-
-  .result-container{
-    display:none;
-    width:100%;
-    max-width:920px;
-    text-align:center;
-    margin-top:8px;
-  }
-  .result-container h2{
-    font-weight:600;
-    margin:6px 0 10px;
-    color:#023e6b;
-  }
-
-  .cards{
-    display:grid;
-    grid-template-columns: repeat(2, minmax(120px,1fr));
-    grid-template-rows: auto auto;
-    gap:18px 24px;
-    justify-items:center;
-    align-items:start;
-  }
-  .card-wrapper{
-    width:var(--card-w);
-    text-align:center;
-  }
+  /* Hapus definisi grid-area lama supaya grid-template-areas bekerja sempurna */
+  /*
   .pos-0{ grid-area:1 / 1 / 2 / 2; }
   .pos-1{ grid-area:1 / 2 / 2 / 3; }
   .pos-2{ grid-area:2 / 1 / 3 / 3; }
   .pos-2 .card{ width: calc(var(--card-w) * 1.15); height: calc(var(--card-h) * 1.05); }
-
-  .card{
-    width:var(--card-w);
-    height:var(--card-h);
-    border-radius:12px;
-    overflow:hidden;
-    position:relative;
-    background-size:cover;
-    background-position:center;
-    display:flex;
-    align-items:flex-end;
-    justify-content:center;
-    padding-bottom:10px;
-    transition:transform .26s cubic-bezier(.2,.9,.2,1);
+  */
+  .card {
+    width: var(--card-w);
+    height: var(--card-h);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 10px;
+    transition: transform 0.26s cubic-bezier(.2,.9,.2,1);
   }
-  .card:hover{ transform:translateY(-6px) }
-
-  .rarity-label{
-    position:absolute;
-    left:8px;
-    bottom:8px;
-    font-weight:700;
-    color:white;
-    padding:6px 8px;
-    border-radius:8px;
-    font-size:1.05rem;
-    text-shadow:0 2px 8px rgba(0,0,0,0.45);
-    box-shadow:0 4px 14px rgba(0,0,0,0.18);
+  .card:hover {
+    transform: translateY(-6px);
   }
-
-  .frame-gold{
-    border:4px solid rgba(255,215,0,0.95);
+  .rarity-label {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    font-weight: 700;
+    color: white;
+    padding: 6px 8px;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  }
+  .frame-gold {
+    border: 4px solid rgba(255,215,0,0.95);
     box-shadow: 0 6px 22px rgba(255,215,0,0.12), inset 0 0 18px rgba(255,240,180,0.12);
     animation: shimmerGold 2.2s infinite linear;
   }
-  .frame-purple{
-    border:4px solid rgba(142,68,173,0.95);
+  .frame-purple {
+    border: 4px solid rgba(142,68,173,0.95);
     box-shadow: 0 6px 22px rgba(142,68,173,0.12), inset 0 0 18px rgba(200,150,220,0.09);
     animation: shimmerPurple 2.2s infinite linear;
   }
-  @keyframes shimmerGold{
-    0%{ filter:brightness(1); box-shadow:0 6px 22px rgba(255,215,0,0.08); }
-    50%{ filter:brightness(1.06); box-shadow:0 10px 36px rgba(255,215,0,0.18); }
-    100%{ filter:brightness(1); box-shadow:0 6px 22px rgba(255,215,0,0.08); }
+  @keyframes shimmerGold {
+    0% { filter: brightness(1); box-shadow: 0 6px 22px rgba(255,215,0,0.08); }
+    50% { filter: brightness(1.06); box-shadow: 0 10px 36px rgba(255,215,0,0.18); }
+    100% { filter: brightness(1); box-shadow: 0 6px 22px rgba(255,215,0,0.08); }
   }
-  @keyframes shimmerPurple{
-    0%{ filter:brightness(1); box-shadow:0 6px 22px rgba(142,68,173,0.08); }
-    50%{ filter:brightness(1.04); box-shadow:0 10px 36px rgba(142,68,173,0.16); }
-    100%{ filter:brightness(1); box-shadow:0 6px 22px rgba(142,68,173,0.08); }
+  @keyframes shimmerPurple {
+    0% { filter: brightness(1); box-shadow: 0 6px 22px rgba(142,68,173,0.08); }
+    50% { filter: brightness(1.04); box-shadow: 0 10px 36px rgba(142,68,173,0.16); }
+    100% { filter: brightness(1); box-shadow: 0 6px 22px rgba(142,68,173,0.08); }
   }
-
-  .char-name{
-    margin-top:10px;
-    font-weight:600;
-    font-size:0.95rem;
-    color:#072034;
+  .char-name {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #072034;
   }
-  .char-author{
-    margin-top:4px;
-    font-size:0.78rem;
-    color:#5b6670;
+  .char-author {
+    margin-top: 4px;
+    font-size: 0.78rem;
+    color: #5b6670;
   }
-
-  @media (max-width:640px){
-    :root{ --card-w:140px; --card-h:190px; }
-    .cards{ grid-template-columns: repeat(1, 1fr); grid-template-rows: auto auto auto; }
-    .pos-0, .pos-1, .pos-2{ grid-area:auto; }
-    .pos-2 .card{ width:100%; height:auto; aspect-ratio:3/4; }
+  @media (max-width: 640px) {
+    :root {
+      --card-w: 140px;
+      --card-h: 190px;
+    }
+    /* grid sudah diatur di atas */
   }
-
 </style>
 </head>
 <body>
 
-  <h1>Gacha OC 1.0</h1>
-  <img class="top-image" id="mainImg" src="front.gif">
+  <h1 id="mainTitle">Gacha OC 1.0</h1>
+  <img class="top-image" id="mainImg" src="image/front.gif" alt="Main GIF">
 
   <button id="drawBtn">Draw</button>
 
-  <div class="loading-container" id="loading">
-    <div class="loading-text">Loading...</div>
-    <div class="loading-bar" aria-hidden="true">
-      <div class="loading-fill" id="loadingFill"></div>
+  <div class="loading-container" id="loading" aria-live="polite" aria-busy="true" aria-label="Loading animation">
+    <div class="loading-anim">
+      <div class="loading-bar-move" id="loadingBar"></div>
     </div>
   </div>
 
-  <div class="result-container" id="result">
+  <div class="result-container" id="result" aria-live="polite">
     <h2>Congrats, you got:</h2>
     <div class="cards" id="cards"></div>
   </div>
 
 <script>
-/* Data: 50 characters, exactly 5 with rarity "S", rest "A"
-   - Ganti field src, name, author sesuai kebutuhan.
-*/
 const characters = [
-  { src:"https://via.placeholder.com/400x533?text=Char+1",  rarity:"A", name:"Astra",      author:"Creator 1" },
-  { src:"https://via.placeholder.com/400x533?text=Char+2",  rarity:"A", name:"Brynn",      author:"Creator 2" },
-  { src:"https://via.placeholder.com/400x533?text=Char+3",  rarity:"S", name:"Ciela",      author:"Creator 3" },
-  { src:"https://via.placeholder.com/400x533?text=Char+4",  rarity:"A", name:"Doran",      author:"Creator 4" },
-  { src:"https://via.placeholder.com/400x533?text=Char+5",  rarity:"A", name:"Eris",       author:"Creator 5" },
-  { src:"https://via.placeholder.com/400x533?text=Char+6",  rarity:"A", name:"Fynn",       author:"Creator 6" },
-  { src:"https://via.placeholder.com/400x533?text=Char+7",  rarity:"A", name:"Gala",       author:"Creator 7" },
-  { src:"https://via.placeholder.com/400x533?text=Char+8",  rarity:"A", name:"Haze",       author:"Creator 8" },
-  { src:"https://via.placeholder.com/400x533?text=Char+9",  rarity:"A", name:"Iris",       author:"Creator 9" },
-  { src:"https://via.placeholder.com/400x533?text=Char+10", rarity:"A", name:"Juno",       author:"Creator 10" },
+  { src: "Alexza.jpeg", rarity: "A", name: "Alexza", author: "@salaluak" },
+  { src: "Fira.jpeg", rarity: "S", name: "Fira", author: "@salaluak" },
+  { src: "Amia.jpeg", rarity: "A", name: "Amia", author: "@whitehatillust" },
+  { src: "Via.jpeg", rarity: "A", name: "Via", author: "@vierto.art.p" },
+  { src: "Suke.jpeg", rarity: "A", name: "Sukehiro", author: "@sukehiro_kerupuk" },
+  { src: "Rista.jpeg", rarity: "A", name: "Rista", author: "@sukehiro_kerupuk" },
+  { src: "Aghni.jpeg", rarity: "S", name: "Aghni", author: "@djatiwaru" },
+  { src: "Kyuuvy.jpeg", rarity: "A", name: "Kyuuvy", author: "@kyuzyart_" },
+  { src: "Kenshi.jpeg", rarity: "S", name: "Kenshi", author: "@cloudyyyr" },
+  { src: "Vierto.jpeg", rarity: "A", name: "Vierto", author: "@vierto.art.p" },
+  { src: "Gatot.jpeg", rarity: "S", name: "Gatot", author: "@gatot" },
+  { src: "Ambatron.jpeg", rarity: "S", name: "Ambatron", author: "@thedreamybull_only" },
+  { src: "Goblil.jpeg", rarity: "S", name: "Goblil", author: "@gtw" },
+  { src: "Charlotte.jpeg", rarity: "S", name: "Charlotte", author: "@sakimim110" },
+  { src: "Dewi.jpeg", rarity: "A", name: "Dewi", author: "@invisible0910" },
+  { src: "Emi.jpeg", rarity: "S", name: "Emi (Udh di klem sama rapi)", author: "@14.fins_s" },
+  { src: "Gavi.jpeg", rarity: "A", name: "Gavi", author: "@vladeesteba" },
+  { src: "KUN.jpeg", rarity: "A", name: "KUN", author: "@kun._nyitasem" },
+  { src: "Kusmini.jpeg", rarity: "S", name: "Kusmini", author: "@iam_jeje01" },
+  { src: "Lethe.jpeg", rarity: "S", name: "Lethe", author: "@valgungap" },
+  { src: "Liny.jpeg", rarity: "A", name: "Liny", author: "@sinzy_art" },
+  { src: "Ryuu.jpeg", rarity: "A", name: "Ryuu", author: "sinzy_art" },
+  { src: "Rain.jpeg", rarity: "A", name: "Rain", author: "@only_painted" },
+  { src: "Raiona.jpeg", rarity: "A", name: "Raiona", author: "@hadesz" },
+  { src: "Rye.jpeg", rarity: "A", name: "Rye", author: "@timpancoklat" },
+  { src: "Saki.jpeg", rarity: "A", name: "Saki", author: "@sakiirisu" },
+  { src: "Sesil.jpeg", rarity: "A", name: "Sesil", author: "@garam_art_404" },
+  { src: "Whitey.jpeg", rarity: "A", name: "Whitey", author: "@whitehatillust" },
+  { src: "Yeonnah.jpeg", rarity: "A", name: "Yeonnah", author: "@yeoonghann12" },
+  { src: "Zoelto.jpeg", rarity: "A", name: "Zoelto", author: "@rrufufuru" },
+  { src: "Zelphas.jpeg", rarity: "A", name: "Zelphas", author: "@zelphasart" },
+  
 
-  { src:"https://via.placeholder.com/400x533?text=Char+11", rarity:"A", name:"Kian",       author:"Creator 11" },
-  { src:"https://via.placeholder.com/400x533?text=Char+12", rarity:"A", name:"Lira",       author:"Creator 12" },
-  { src:"https://via.placeholder.com/400x533?text=Char+13", rarity:"A", name:"Miro",       author:"Creator 13" },
-  { src:"https://via.placeholder.com/400x533?text=Char+14", rarity:"A", name:"Nerys",      author:"Creator 14" },
-  { src:"https://via.placeholder.com/400x533?text=Char+15", rarity:"A", name:"Orla",       author:"Creator 15" },
-  { src:"https://via.placeholder.com/400x533?text=Char+16", rarity:"A", name:"Pax",        author:"Creator 16" },
-  { src:"https://via.placeholder.com/400x533?text=Char+17", rarity:"A", name:"Quinn",      author:"Creator 17" },
-  { src:"https://via.placeholder.com/400x533?text=Char+18", rarity:"A", name:"Rhea",       author:"Creator 18" },
-  { src:"https://via.placeholder.com/400x533?text=Char+19", rarity:"A", name:"Sylo",       author:"Creator 19" },
-  { src:"https://via.placeholder.com/400x533?text=Char+20", rarity:"A", name:"Tala",       author:"Creator 20" },
-
-  { src:"https://via.placeholder.com/400x533?text=Char+21", rarity:"A", name:"Umi",        author:"Creator 21" },
-  { src:"https://via.placeholder.com/400x533?text=Char+22", rarity:"A", name:"Vero",       author:"Creator 22" },
-  { src:"https://via.placeholder.com/400x533?text=Char+23", rarity:"A", name:"Wren",       author:"Creator 23" },
-  { src:"https://via.placeholder.com/400x533?text=Char+24", rarity:"A", name:"Xara",       author:"Creator 24" },
-  { src:"https://via.placeholder.com/400x533?text=Char+25", rarity:"A", name:"Yori",       author:"Creator 25" },
-  { src:"https://via.placeholder.com/400x533?text=Char+26", rarity:"A", name:"Zale",       author:"Creator 26" },
-  { src:"https://via.placeholder.com/400x533?text=Char+27", rarity:"A", name:"Ari",        author:"Creator 27" },
-  { src:"https://via.placeholder.com/400x533?text=Char+28", rarity:"A", name:"Bale",       author:"Creator 28" },
-  { src:"https://via.placeholder.com/400x533?text=Char+29", rarity:"A", name:"Cora",       author:"Creator 29" },
-  { src:"https://via.placeholder.com/400x533?text=Char+30", rarity:"A", name:"Dax",        author:"Creator 30" },
-
-  { src:"https://via.placeholder.com/400x533?text=Char+31", rarity:"A", name:"Eon",        author:"Creator 31" },
-  { src:"https://via.placeholder.com/400x533?text=Char+32", rarity:"A", name:"Faye",       author:"Creator 32" },
-  { src:"https://via.placeholder.com/400x533?text=Char+33", rarity:"A", name:"Gide",       author:"Creator 33" },
-  { src:"https://via.placeholder.com/400x533?text=Char+34", rarity:"A", name:"Hara",       author:"Creator 34" },
-  { src:"https://via.placeholder.com/400x533?text=Char+35", rarity:"S", name:"Ivo",        author:"Creator 35" },
-  { src:"https://via.placeholder.com/400x533?text=Char+36", rarity:"A", name:"Jace",       author:"Creator 36" },
-  { src:"https://via.placeholder.com/400x533?text=Char+37", rarity:"A", name:"Kora",       author:"Creator 37" },
-  { src:"https://via.placeholder.com/400x533?text=Char+38", rarity:"A", name:"Lumo",       author:"Creator 38" },
-  { src:"https://via.placeholder.com/400x533?text=Char+39", rarity:"A", name:"Mara",       author:"Creator 39" },
-  { src:"https://via.placeholder.com/400x533?text=Char+40", rarity:"A", name:"Nox",        author:"Creator 40" },
-
-  { src:"https://via.placeholder.com/400x533?text=Char+41", rarity:"A", name:"Oryn",       author:"Creator 41" },
-  { src:"https://via.placeholder.com/400x533?text=Char+42", rarity:"A", name:"Perri",      author:"Creator 42" },
-  { src:"https://via.placeholder.com/400x533?text=Char+43", rarity:"S", name:"Queta",      author:"Creator 43" },
-  { src:"https://via.placeholder.com/400x533?text=Char+44", rarity:"A", name:"Riven",      author:"Creator 44" },
-  { src:"https://via.placeholder.com/400x533?text=Char+45", rarity:"A", name:"Sera",       author:"Creator 45" },
-  { src:"https://via.placeholder.com/400x533?text=Char+46", rarity:"A", name:"Tore",       author:"Creator 46" },
-  { src:"https://via.placeholder.com/400x533?text=Char+47", rarity:"A", name:"Uma",        author:"Creator 47" },
-  { src:"https://via.placeholder.com/400x533?text=Char+48", rarity:"S", name:"Vex",        author:"Creator 48" },
-  { src:"https://via.placeholder.com/400x533?text=Char+49", rarity:"A", name:"Waya",       author:"Creator 49" },
-  { src:"https://via.placeholder.com/400x533?text=Char+50", rarity:"A", name:"Xeo",        author:"Creator 50" }
 ];
 
 let drawCount = 0;
@@ -274,36 +303,27 @@ const MAX_DRAWS = 2;
 
 const drawBtn = document.getElementById('drawBtn');
 const loading = document.getElementById('loading');
-const loadingFill = document.getElementById('loadingFill');
+const loadingBar = document.getElementById('loadingBar');
 const result = document.getElementById('result');
 const cardsWrap = document.getElementById('cards');
+const mainTitle = document.getElementById('mainTitle');
+const mainImg = document.getElementById('mainImg');
 
-function pickRandom(arr, n){
+function pickRandom(arr, n) {
   const copy = arr.slice();
   const res = [];
-  for(let i=0;i<n && copy.length>0;i++){
-    const idx = Math.floor(Math.random()*copy.length);
-    res.push(copy.splice(idx,1)[0]);
+  for (let i = 0; i < n && copy.length > 0; i++) {
+    const idx = Math.floor(Math.random() * copy.length);
+    res.push(copy.splice(idx, 1)[0]);
   }
   return res;
 }
 
-function showLoading(){
-  loading.style.display = 'flex';
-  loadingFill.style.width = '0%';
-  setTimeout(()=> loadingFill.style.width = '100%', 50);
-}
-
-function hideLoading(){
-  loading.style.display = 'none';
-  loadingFill.style.width = '0%';
-}
-
-function clearCards(){
+function clearCards() {
   cardsWrap.innerHTML = '';
 }
 
-function createCardElement(char, posIndex){
+function createCardElement(char, posIndex) {
   const wrapper = document.createElement('div');
   wrapper.className = 'card-wrapper pos-' + posIndex;
 
@@ -311,11 +331,11 @@ function createCardElement(char, posIndex){
   card.className = 'card ' + (char.rarity === 'S' ? 'frame-gold' : 'frame-purple');
   card.style.backgroundImage = `url("${char.src}")`;
 
-  if(char.rarity){
+  if (char.rarity) {
     const rlab = document.createElement('div');
     rlab.className = 'rarity-label';
     rlab.textContent = char.rarity;
-    if(char.rarity === 'S'){
+    if (char.rarity === 'S') {
       rlab.style.background = 'linear-gradient(90deg,#b8860b,#ffd700)';
       rlab.style.color = '#111';
     } else {
@@ -333,7 +353,7 @@ function createCardElement(char, posIndex){
 
   const authorEl = document.createElement('div');
   authorEl.className = 'char-author';
-  authorEl.textContent = (char.author ? 'by ' + char.author : '');
+  authorEl.textContent = char.author ? 'by ' + char.author : '';
 
   wrapper.appendChild(nameEl);
   wrapper.appendChild(authorEl);
@@ -341,40 +361,54 @@ function createCardElement(char, posIndex){
   return wrapper;
 }
 
-drawBtn.addEventListener('click', async ()=>{
-  if(drawCount >= MAX_DRAWS) return;
+drawBtn.addEventListener('click', async () => {
+  if (drawCount >= MAX_DRAWS) return;
 
   drawCount++;
   drawBtn.disabled = true;
   result.style.display = 'none';
   clearCards();
-  showLoading();
+
+  mainTitle.style.opacity = '0';
+  mainImg.style.opacity = '0';
+
+  loading.style.display = 'flex';
+
+  const tempPicked = pickRandom(characters, 3);
+  const hasS = tempPicked.some(c => c.rarity === 'S');
+
+  if (hasS) {
+    loadingBar.classList.remove('loading-bar-purple');
+    loadingBar.classList.add('loading-bar-gold');
+  } else {
+    loadingBar.classList.remove('loading-bar-gold');
+    loadingBar.classList.add('loading-bar-purple');
+  }
 
   await new Promise(res => setTimeout(res, 2000));
 
-  hideLoading();
+  loading.style.display = 'none';
 
-  const picked = pickRandom(characters, 3);
-
-  picked.forEach((c,i)=>{
+  tempPicked.forEach((c, i) => {
     const el = createCardElement(c, i);
     cardsWrap.appendChild(el);
+    setTimeout(() => el.classList.add('show'), i * 150);
   });
 
   result.style.display = 'block';
 
-  if(drawCount < MAX_DRAWS){
+  if (drawCount < MAX_DRAWS) {
     drawBtn.disabled = false;
     drawBtn.textContent = 'Draw Again';
   } else {
     drawBtn.disabled = true;
     drawBtn.textContent = 'No More Draws';
   }
+
+  mainTitle.style.opacity = '1';
+  mainImg.style.opacity = '1';
 });
 </script>
 
 </body>
 </html>
-
-
-
